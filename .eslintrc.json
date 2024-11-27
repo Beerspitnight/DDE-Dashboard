@@ -1,0 +1,22 @@
+{
+    "root": true,
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "node": true
+    },
+    "extends": ["react-app", "react-app/jest"],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false,
+      "babelOptions": {
+        "presets": ["@babel/preset-react"]
+      }
+    },
+    "rules": {
+      "no-unused-vars": ["warn"],
+      "no-console": ["warn"],
+      "react/prop-types": "off"
+    }
+  }
+  
