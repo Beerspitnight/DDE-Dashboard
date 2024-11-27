@@ -1,29 +1,30 @@
-import React from 'react';
+import React from "react";
 
 const GradeAnalysis = ({ data }) => {
-  if (!data || data.length === 0) return null;
+  if (!data || data.length === 0) {
+    return <div>No data available for Grade Analysis.</div>;
+  }
 
-  // Example: Calculate averages per grade
-  const gradeSummary = data.reduce((acc, row) => {
-    const grade = row.Grade;
-    if (!acc[grade]) {
-      acc[grade] = {
-        totalTime: 0,
-        totalStudents: 0,
-        totalPass: 0,
-        studentCount: 0,
-      };
+  // Group data by grade and calculate averages
+  const grades = {};
+  data.forEach((row) => {
+    const grade = row["Grade"];
+    const time = parseFloat(row["Average Lesson Time-on-Task per Student (Mins)"]) || 0;
+    const passRate = parseFloat(row["Average % Lessons Passed (YTD)"]) || 0;
+
+    if (!grades[grade]) {
+      grades[grade] = { totalTime: 0, totalPassRate: 0, count: 0 };
     }
-    acc[grade].totalTime += parseInt(row['Average Lesson Time-on-Task per Student (Mins)'], 10) || 0;
-    acc[grade].totalPass += parseInt(row['% Lessons Passed (YTD)'], 10) || 0;
-    acc[grade].studentCount += 1;
-    return acc;
-  }, {});
 
-  const gradeAnalysis = Object.keys(gradeSummary).map((grade) => ({
+    grades[grade].totalTime += time;
+    grades[grade].totalPassRate += passRate;
+    grades[grade].count += 1;
+  });
+
+  const gradeData = Object.entries(grades).map(([grade, stats]) => ({
     grade,
-    avgTime: (gradeSummary[grade].totalTime / gradeSummary[grade].studentCount).toFixed(2),
-    avgPassRate: (gradeSummary[grade].totalPass / gradeSummary[grade].studentCount).toFixed(2),
+    avgTime: (stats.totalTime / stats.count).toFixed(2),
+    avgPassRate: (stats.totalPassRate / stats.count).toFixed(2),
   }));
 
   return (
@@ -38,11 +39,11 @@ const GradeAnalysis = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {gradeAnalysis.map((item) => (
-            <tr key={item.grade}>
-              <td>{item.grade}</td>
-              <td>{item.avgTime}</td>
-              <td>{item.avgPassRate}%</td>
+          {gradeData.map((row) => (
+            <tr key={row.grade}>
+              <td>{row.grade}</td>
+              <td>{row.avgTime}</td>
+              <td>{row.avgPassRate}%</td>
             </tr>
           ))}
         </tbody>
