@@ -1,31 +1,29 @@
-import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import React from "react";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const EfficiencyScatter = ({ data }) => {
-  if (!data || data.length === 0) return null;
+  if (!data || data.length === 0) {
+    return <div>No data available for Efficiency Analysis.</div>;
+  }
 
-  // Prepare data for scatter plot
+  // Extract time-on-task vs. pass rate data
   const scatterData = data.map((row) => ({
-    time: parseInt(row['Average Lesson Time-on-Task per Student (Mins)'], 10) || 0,
-    passRate: parseInt(row['% Lessons Passed (YTD)'], 10) || 0,
-    grade: row.Grade,
+    time: parseFloat(row["Average Lesson Time-on-Task per Student (Mins)"]) || 0,
+    passRate: parseFloat(row["Average % Lessons Passed (YTD)"]) || 0,
   }));
 
   return (
     <div>
       <h2>Efficiency Analysis</h2>
-      <ScatterChart
-        width={800}
-        height={400}
-        margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-      >
-        <CartesianGrid />
-        <XAxis type="number" dataKey="time" name="Time-on-Task" unit=" mins" />
-        <YAxis type="number" dataKey="passRate" name="Pass Rate" unit="%" />
-        <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-        <Legend />
-        <Scatter name="Grade Data" data={scatterData} fill="#8884d8" />
-      </ScatterChart>
+      <ResponsiveContainer width="100%" height={400}>
+        <ScatterChart>
+          <CartesianGrid />
+          <XAxis type="number" dataKey="time" name="Time on Task (mins)" />
+          <YAxis type="number" dataKey="passRate" name="Pass Rate (%)" />
+          <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+          <Scatter data={scatterData} fill="#8884d8" />
+        </ScatterChart>
+      </ResponsiveContainer>
     </div>
   );
 };
