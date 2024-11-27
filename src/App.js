@@ -5,19 +5,18 @@ import GradeAnalysis from './components/GradeAnalysis';
 import EfficiencyScatter from './components/EfficiencyScatter';
 
 function App() {
-  const [data, setData] = useState([]);
-  
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       Papa.parse(file, {
         header: true,
         complete: (results) => {
+          console.log("Parsed Data:", results.data); // Debugging Line
           setData(results.data);
         },
       });
     }
-  };
+  };  
 
   return (
     <div>
